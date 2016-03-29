@@ -1,0 +1,22 @@
+https://www.websequencediagrams.com/?lz=dGl0bGUgU2hvcnRlbmVyCgpDbGllbnQtPgAKCTogUE9TVCBodHRwOi8vYmVtby5iaQpub3RlIHJpZ2h0IG9mIAAvBgogICAgewABBXVybDoAKwhleGFtcGxlLmNvbQAdBWFsaWFzOiBleHBsAC0FfQplbmQgbm90ZQpvcHQAGQYgPT0gbnVsABsGAIEVCQCBCQ1nZW5lcmF0ZUFsaWFzKCkKZW5kCgAfC0RhdGFiYXNlOiBDYWxscyBpbnNlcnQodXJsLAB8BSkKABoIAIFfDVJldHVybnMgb2sAQQwAgg8GOiBIVFRQIDIwMDogQ3JlYXRlZACCGxVHRQCCHxAvAIFoBQCBAxtmZXRjaCgAdSQAgkMSIACBERkzMDI6IFJlZGlyZWN0cyB0bwCDABM&s=roundgreen
+
+title Shortener
+
+Client->Shortener: POST http://bemo.bi
+note right of Client
+    {
+    url: http://example.com
+    alias: expl
+    }
+end note
+opt alias == null
+    Shortener->Shortener: generateAlias()
+end
+Shortener->Database: Calls insert(url,alias)
+Database->Shortener: Returns ok
+Shortener->Client: HTTP 200: Created
+
+Client->Shortener: GET http://bemo.bi/expl
+Shortener->Database: Calls fetch(alias)
+Database->Shortener: Returns http://example.com
+Shortener->Client: HTTP 302: Redirects to http://example.com
