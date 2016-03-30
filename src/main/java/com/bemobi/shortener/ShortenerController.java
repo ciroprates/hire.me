@@ -32,7 +32,6 @@ public class ShortenerController {
 
     @RequestMapping(value = "/{alias}", method = RequestMethod.GET)
     public void redirect(@PathVariable String alias, HttpServletResponse response) {
-        System.out.printf(alias);
 
         String fullUrl = shortenerService.find(alias);
 
