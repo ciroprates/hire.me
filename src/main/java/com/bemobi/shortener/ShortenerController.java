@@ -15,23 +15,29 @@ public class ShortenerController {
     private ShortenerService shortenerService;
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public void shorten(@RequestParam String url,
+    public String shorten(@RequestParam(name = "url") String fullUrl,
                         @RequestParam(required = false) String alias) {
 
-        shortenerService.save(url, alias);
+        boolean isUpdatedOfExisting = shortenerService.upsert(fullUrl, alias);
 
-        return;
+        String message;
+        if (isUpdatedOfExisting) {
+            message = "Updated!";
+        } else {
+            message = "Inserted!";
+        }
+
+        return message;
     }
 
     @RequestMapping(value = "/{alias}", method = RequestMethod.GET)
     public void redirect(@PathVariable String alias, HttpServletResponse response) {
-
         System.out.printf(alias);
 
-        String url = shortenerService.find(alias);
+        String fullUrl = shortenerService.find(alias);
 
         try {
-            response.sendRedirect(url);
+            response.sendRedirect(fullUrl);
         } catch (IOException e) {
             e.printStackTrace();
         }

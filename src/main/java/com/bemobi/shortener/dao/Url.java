@@ -1,21 +1,21 @@
-package com.bemobi.shortener;
+package com.bemobi.shortener.dao;
 
 import org.springframework.data.annotation.Id;
 
 /**
  * Created by ciroxavier on 3/27/16.
  */
-public class Short {
+public class Url {
 
     @Id
     private String alias;
 
-    private String url;
+    private String fullUrl;
 
 
-    public Short(String alias, String url) {
+    public Url(String alias, String fullUrl) {
         this.alias = alias;
-        this.url = url;
+        this.fullUrl = fullUrl;
     }
 
     public String getAlias() {
@@ -26,11 +26,11 @@ public class Short {
         this.alias = alias;
     }
 
-    public String getUrl() {
-        return url;
+    public String getFullUrl() {
+        return fullUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setFullUrl(String fullUrl) {
+        this.fullUrl = fullUrl;
     }
 }

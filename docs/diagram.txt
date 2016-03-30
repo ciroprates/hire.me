@@ -5,14 +5,14 @@ title Shortener
 Client->Shortener: POST http://bemo.bi
 note right of Client
     {
-    url: http://example.com
+    fullUrl: http://example.com
     alias: expl
     }
 end note
 opt alias == null
     Shortener->Shortener: generateAlias()
 end
-Shortener->Database: Calls insert(url,alias)
+Shortener->Database: Calls insert(fullUrl,alias)
 Database->Shortener: Returns ok
 Shortener->Client: HTTP 200: Created
 
