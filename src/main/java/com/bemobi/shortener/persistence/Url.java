@@ -1,4 +1,4 @@
-package com.bemobi.shortener.dao;
+package com.bemobi.shortener.persistence;
 
 import org.springframework.data.annotation.Id;
 

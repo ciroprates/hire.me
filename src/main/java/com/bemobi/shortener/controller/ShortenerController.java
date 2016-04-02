@@ -1,9 +1,11 @@
-package com.bemobi.shortener;
+package com.bemobi.shortener.controller;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Optional;
 
+import com.bemobi.shortener.service.ShortenerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,19 +17,13 @@ public class ShortenerController {
     private ShortenerService shortenerService;
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String shorten(@RequestParam(name = "url") String fullUrl,
-                        @RequestParam(required = false) String alias) {
+    public void shorten(@RequestParam(name = "url") String fullUrl,
+                        @RequestParam Optional<String> alias,
+                        HttpServletResponse response) {
 
-        boolean isUpdatedOfExisting = shortenerService.upsert(fullUrl, alias);
 
-        String message;
-        if (isUpdatedOfExisting) {
-            message = "Updated!";
-        } else {
-            message = "Inserted!";
-        }
-
-        return message;
+        shortenerService.save(fullUrl, alias);
+        response.setStatus(HttpStatus.CREATED.value());
     }
 
     @RequestMapping(value = "/{alias}", method = RequestMethod.GET)
@@ -40,6 +36,5 @@ public class ShortenerController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return;
     }
 }

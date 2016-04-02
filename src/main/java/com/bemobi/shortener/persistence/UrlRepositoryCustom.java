@@ -1,7 +1,6 @@
-package com.bemobi.shortener.dao;
+package com.bemobi.shortener.persistence;
 
 import com.mongodb.WriteResult;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  * Created by ciroxavier on 3/29/16.

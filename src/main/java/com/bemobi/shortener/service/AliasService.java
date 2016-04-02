@@ -1,4 +1,6 @@
-package com.bemobi.shortener;
+package com.bemobi.shortener.service;
+
+import org.springframework.stereotype.Service;
 
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -7,7 +9,8 @@ import java.util.stream.Stream;
 /**
  * Created by ciroxavier on 3/30/16.
  */
-public class AliasGenerator {
+@Service
+public class AliasService {
 
     private final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
