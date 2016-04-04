@@ -1,5 +1,6 @@
 package com.bemobi.shortener;
 
+import com.bemobi.shortener.persistence.Url;
 import com.bemobi.shortener.persistence.UrlRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -16,7 +17,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -58,7 +58,10 @@ public class ShortenerApplicationTests {
 
     @Test
     public void redirects() throws Exception {
-
+        String alias = urlRepository.findTopByOrderByCreationDateDesc()
+                .map(Url::getAlias)
+                .orElseThrow(() -> new Exception("Database is empty"));
+        redirects(alias);
     }
 
     @Test
@@ -73,10 +76,10 @@ public class ShortenerApplicationTests {
     @Test
     public void redirectsTestAlias() throws Exception {
         createsWithTestAlias();
-        mockMvc.perform(get("/" + TEST_ALIAS)).andExpect(status().is(HttpStatus.MOVED_TEMPORARILY.value()));
+        redirects(TEST_ALIAS);
     }
 
-
-
-
+    private void redirects(String alias) throws Exception {
+        mockMvc.perform(get("/" + alias)).andExpect(status().is(HttpStatus.MOVED_TEMPORARILY.value()));
+    }
 }

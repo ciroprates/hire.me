@@ -2,6 +2,8 @@ package com.bemobi.shortener.persistence;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.Date;
+
 /**
  * Created by ciroxavier on 3/27/16.
  */
@@ -12,10 +14,20 @@ public class Url {
 
     private String fullUrl;
 
+    private Date creationDate;
 
     public Url(String alias, String fullUrl) {
         this.alias = alias;
         this.fullUrl = fullUrl;
+        this.creationDate = new Date();
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public String getAlias() {
