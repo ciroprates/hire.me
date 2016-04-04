@@ -49,7 +49,7 @@ public class ShortenerApplicationTests {
     }
 
     @Test
-    public void creates() throws Exception {
+    public void shortenWithoutAlias() throws Exception {
         mockMvc.perform(
                 post("/")
                         .param("url", TEST_URL))
@@ -57,7 +57,7 @@ public class ShortenerApplicationTests {
     }
 
     @Test
-    public void redirects() throws Exception {
+    public void redirectsToGeneratedAlias() throws Exception {
         String alias = urlRepository.findTopByOrderByCreationDateDesc()
                 .map(Url::getAlias)
                 .orElseThrow(() -> new Exception("Database is empty"));
@@ -65,7 +65,7 @@ public class ShortenerApplicationTests {
     }
 
     @Test
-    public void createsWithTestAlias() throws Exception {
+    public void shortenWithAlias() throws Exception {
         mockMvc.perform(
                 post("/")
                         .param("url", TEST_URL)
@@ -74,8 +74,8 @@ public class ShortenerApplicationTests {
     }
 
     @Test
-    public void redirectsTestAlias() throws Exception {
-        createsWithTestAlias();
+    public void redirectsToTestAlias() throws Exception {
+        shortenWithAlias();
         redirects(TEST_ALIAS);
     }
 
