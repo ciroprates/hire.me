@@ -8,15 +8,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -49,37 +50,47 @@ public class ShortenerApplicationTests {
     }
 
     @Test
-    public void shortenWithoutAlias() throws Exception {
+    public void shortenWithGeneratedAlias() throws Exception {
         mockMvc.perform(
                 post("/")
                         .param("url", TEST_URL))
-                .andExpect(status().is(HttpStatus.CREATED.value()));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.alias", is(findLastGeneratedAlias())));
     }
 
     @Test
     public void redirectsToGeneratedAlias() throws Exception {
-        String alias = urlRepository.findTopByOrderByCreationDateDesc()
-                .map(Url::getAlias)
-                .orElseThrow(() -> new Exception("Database is empty"));
+        String alias = findLastGeneratedAlias();
         redirects(alias);
     }
 
     @Test
-    public void shortenWithAlias() throws Exception {
+    public void shortenWithTestAlias() throws Exception {
         mockMvc.perform(
                 post("/")
                         .param("url", TEST_URL)
                         .param("alias", TEST_ALIAS))
-                .andExpect(status().is(HttpStatus.CREATED.value()));
+                .andExpect(status().isCreated());
     }
 
     @Test
     public void redirectsToTestAlias() throws Exception {
-        shortenWithAlias();
+        shortenWithTestAlias();
         redirects(TEST_ALIAS);
     }
 
     private void redirects(String alias) throws Exception {
-        mockMvc.perform(get("/" + alias)).andExpect(status().is(HttpStatus.MOVED_TEMPORARILY.value()));
+        mockMvc.perform(get("/" + alias)).andExpect(status().isFound());
     }
+
+    private String findLastGeneratedAlias() throws Exception {
+        String alias = urlRepository.findTopByOrderByCreationDateDesc()
+                .map(Url::getAlias)
+                .orElseThrow(() -> new Exception("Database is empty"));
+        return alias;
+    }
+
+    // TODO shortenWithAlreadyRegisteredAlias
+    // TODO redirectsToUnknownAlias
+    // TODO checkRedirectCount
 }

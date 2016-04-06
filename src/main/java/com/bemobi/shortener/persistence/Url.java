@@ -16,10 +16,20 @@ public class Url {
 
     private Date creationDate;
 
+    private int hitCount;
+
     public Url(String alias, String fullUrl) {
         this.alias = alias;
         this.fullUrl = fullUrl;
         this.creationDate = new Date();
+    }
+
+    public int getHitCount() {
+        return hitCount;
+    }
+
+    public void setHitCount(int hitCount) {
+        this.hitCount = hitCount;
     }
 
     public Date getCreationDate() {

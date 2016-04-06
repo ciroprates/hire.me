@@ -28,7 +28,7 @@ public class ShortenerService {
     }
 
 
-    private void save(String fullUrl) {
+    private Url save(String fullUrl) {
 
         String alias;
         Url url;
@@ -48,14 +48,15 @@ public class ShortenerService {
             throw new RuntimeException("Could not generate a new alias! Please try again");
         }
 
-        return;
+        return url;
     }
 
-    public void save(String fullUrl, Optional<String> alias) {
+    public Url save(String fullUrl, Optional<String> alias) {
 
+        Url url;
         if (!alias.isPresent()) {
-            save(fullUrl);
-            return;
+            url = save(fullUrl);
+            return url;
         }
 
         boolean alreadyExists = alias
@@ -63,12 +64,13 @@ public class ShortenerService {
                 .isPresent();
 
         if (!alreadyExists) {
-            Url url = new Url(alias.get(), fullUrl);
+            url = new Url(alias.get(), fullUrl);
             urlRepository.save(url);
-            return;
         } else {
             throw new IllegalArgumentException("Given alias already exists!");
         }
+
+        return url;
 
     }
 
