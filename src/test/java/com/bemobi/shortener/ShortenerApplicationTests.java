@@ -59,7 +59,8 @@ public class ShortenerApplicationTests {
                 post("/")
                         .param("url", TEST_URL))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.alias", is(findLastGeneratedAlias())));
+                .andExpect(jsonPath("$.alias", is(findLastGeneratedAlias())))
+                .andExpect(jsonPath("$.hitCount", is(0)));
     }
 
     @Test
@@ -74,7 +75,8 @@ public class ShortenerApplicationTests {
                 post("/")
                         .param("url", TEST_URL)
                         .param("alias", TEST_ALIAS))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.hitCount", is(0)));
     }
 
     @Test
@@ -83,16 +85,6 @@ public class ShortenerApplicationTests {
         redirects(TEST_ALIAS);
     }
 
-    private void redirects(String alias) throws Exception {
-        mockMvc.perform(get("/" + alias)).andExpect(status().isFound());
-    }
-
-    private String findLastGeneratedAlias() throws Exception {
-        String alias = urlRepository.findTopByOrderByCreationDateDesc()
-                .map(Url::getAlias)
-                .orElseThrow(() -> new Exception("Database is empty"));
-        return alias;
-    }
 
     @Test(expected = NestedServletException.class)
     public void shortenWithAlreadyRegisteredAlias() throws Exception {
@@ -105,9 +97,27 @@ public class ShortenerApplicationTests {
         redirects(UNKNOWN_ALIAS);
     }
 
-    // TODO checkRedirectCount
-    @Test
-    public void checkRedirectCount() throws Exception {
 
+    @Test
+    public void checkMultipleHitCount() throws Exception {
+        int hitTimes = 10;
+        shortenWithTestAlias();
+        for(int i=0;i<hitTimes;i++) {
+            redirects(TEST_ALIAS);
+        }
+        int hitCount = urlRepository.findOne(TEST_ALIAS).getHitCount();
+        assert hitCount == hitTimes;
+    }
+
+
+    private void redirects(String alias) throws Exception {
+        mockMvc.perform(get("/" + alias)).andExpect(status().isFound());
+    }
+
+    private String findLastGeneratedAlias() throws Exception {
+        String alias = urlRepository.findTopByOrderByCreationDateDesc()
+                .map(Url::getAlias)
+                .orElseThrow(() -> new Exception("Database is empty"));
+        return alias;
     }
 }

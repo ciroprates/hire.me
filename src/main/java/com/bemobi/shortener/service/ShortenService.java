@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 
 @Service
-public class ShortenerService {
+public class ShortenService {
 
     @Autowired
     private UrlRepository urlRepository;
@@ -28,7 +28,7 @@ public class ShortenerService {
     }
 
 
-    private Url save(String fullUrl) {
+    private Url shorten(String fullUrl) {
 
         String alias;
         Url url;
@@ -51,11 +51,11 @@ public class ShortenerService {
         return url;
     }
 
-    public Url save(String fullUrl, Optional<String> alias) {
+    public Url shorten(String fullUrl, Optional<String> alias) {
 
         Url url;
         if (!alias.isPresent()) {
-            url = save(fullUrl);
+            url = shorten(fullUrl);
             return url;
         }
 
@@ -74,11 +74,5 @@ public class ShortenerService {
 
     }
 
-    public String find(String alias) {
-        Url url = urlRepository.findOne(alias);
-        String fullUrl = Optional.ofNullable(url)
-                .map(Url::getFullUrl)
-                .orElseThrow(() -> new IllegalArgumentException("Alias not found!"));
-        return fullUrl;
-    }
+
 }
