@@ -11,7 +11,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.NestedServletException;
@@ -19,7 +18,6 @@ import org.springframework.web.util.NestedServletException;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,7 +68,7 @@ public class ShortenerApplicationTests {
     }
 
     @Test
-    public void shortenWithTestAlias() throws Exception {
+    public void shortensWithTestAlias() throws Exception {
         mockMvc.perform(
                 post("/")
                         .param("url", TEST_URL)
@@ -81,15 +79,15 @@ public class ShortenerApplicationTests {
 
     @Test
     public void redirectsToTestAlias() throws Exception {
-        shortenWithTestAlias();
+        shortensWithTestAlias();
         redirects(TEST_ALIAS);
     }
 
 
     @Test(expected = NestedServletException.class)
-    public void shortenWithAlreadyRegisteredAlias() throws Exception {
-        shortenWithTestAlias();
-        shortenWithTestAlias();
+    public void shortensWithAlreadyRegisteredAlias() throws Exception {
+        shortensWithTestAlias();
+        shortensWithTestAlias();
     }
 
     @Test(expected = NestedServletException.class)
@@ -99,9 +97,9 @@ public class ShortenerApplicationTests {
 
 
     @Test
-    public void checkMultipleHitCount() throws Exception {
+    public void checksMultipleHitCount() throws Exception {
         int hitTimes = 10;
-        shortenWithTestAlias();
+        shortensWithTestAlias();
         for(int i=0;i<hitTimes;i++) {
             redirects(TEST_ALIAS);
         }
